@@ -17,8 +17,8 @@ rm -rf *.tar.gz \
     readline-8.3 \
     gdbm-1.26 \
     sqlite-autoconf-3510200 \
-    Python-3.14.2 \
-    python-3.14.2-ohos-arm64
+    Python-3.14.3 \
+    python-3.14.3-ohos-arm64
 
 # 准备一些杂项的命令行工具
 curl -fSLO https://github.com/Harmonybrew/ohos-coreutils/releases/download/9.9/coreutils-9.9-ohos-arm64.tar.gz
@@ -219,9 +219,9 @@ make install
 cd ..
 
 # 编 python 本体
-curl -fSLO https://www.python.org/ftp/python/3.14.2/Python-3.14.2.tgz
-tar -zxf Python-3.14.2.tgz
-cd Python-3.14.2
+curl -fSLO https://www.python.org/ftp/python/3.14.3/Python-3.14.3.tgz
+tar -zxf Python-3.14.3.tgz
+cd Python-3.14.3
 # 强制走 aarch64-linux-musl 逻辑，让它能复用 musl 的 pip 包
 sed -i 's|PLATFORM_TRIPLET="${PLATFORM_TRIPLET#PLATFORM_TRIPLET=}"|PLATFORM_TRIPLET="aarch64-linux-musl"|g' configure
 sed -i 's|MULTIARCH=$($CC --print-multiarch 2>/dev/null)|MULTIARCH="aarch64-linux-musl"|g' configure
@@ -231,7 +231,7 @@ echo "PLATFORM_TRIPLET=aarch64-linux-musl" > Misc/platform_triplet.c
 ./configure \
     --build=aarch64-linux-musl \
     --host=aarch64-linux-musl \
-    --prefix=/opt/python-3.14.2-ohos-arm64 \
+    --prefix=/opt/python-3.14.3-ohos-arm64 \
     --with-openssl=/opt/deps \
     --disable-ipv6 \
     --with-readline=readline \
@@ -242,28 +242,28 @@ sed -i '/HAVE_LINUX_NETFILTER_IPV4_H/d' pyconfig.h
 sed -i '/HAVE_LINUX_CAN/d' pyconfig.h
 make -j$(nproc)
 make install
-cp /opt/deps/lib/*so* /opt/python-3.14.2-ohos-arm64/lib
+cp /opt/deps/lib/*so* /opt/python-3.14.3-ohos-arm64/lib
 cd ..
 
 # 对这几个脚本做一点小改造，让它们能够做到 “portable”，在任意安装路径下都能正常使用。
-cd /opt/python-3.14.2-ohos-arm64/bin
+cd /opt/python-3.14.3-ohos-arm64/bin
 printf '#!/bin/sh\nexec "$(dirname "$(readlink -f "$0")")"/python3.14 -m pip "$@"\n' > pip3
 printf '#!/bin/sh\nexec "$(dirname "$(readlink -f "$0")")"/python3.14 -m pip "$@"\n' > pip3.14
 printf '#!/bin/sh\nexec "$(dirname "$(readlink -f "$0")")"/python3.14 -m pydoc "$@"\n' > pydoc3.14
 cd - >/dev/null
 
 # 这个 python 不支持图形界面，idle 无法正常使用，直接删掉 idle 命令
-rm /opt/python-3.14.2-ohos-arm64/bin/idle*
+rm /opt/python-3.14.3-ohos-arm64/bin/idle*
 
 # 履行开源义务，把使用的开源软件的 license 全部聚合起来放到制品中
-cat <<EOF > /opt/python-3.14.2-ohos-arm64/licenses.txt
+cat <<EOF > /opt/python-3.14.3-ohos-arm64/licenses.txt
 This document describes the licenses of all software distributed with the
 bundled application.
 ==========================================================================
 
 python
 =============
-$(cat Python-3.14.2/LICENSE)
+$(cat Python-3.14.3/LICENSE)
 
 openssl
 =============
@@ -337,8 +337,8 @@ EOF
 # 打包最终产物。
 # 手动通过管道操作来进行压缩是为了规避 toybox 的 gzip 命令的缺陷。
 # 如果直接 tar -zcf 打包（调用的是 /bin 目录下的 gzip），压缩包体积有 300MB；如果这样打（调用的是 busybox 的 gzip），压缩包体积只有 100MB。
-cp -r /opt/python-3.14.2-ohos-arm64 ./
-busybox tar -cf - python-3.14.2-ohos-arm64 | busybox gzip > python-3.14.2-ohos-arm64.tar.gz 
+cp -r /opt/python-3.14.3-ohos-arm64 ./
+busybox tar -cf - python-3.14.3-ohos-arm64 | busybox gzip > python-3.14.3-ohos-arm64.tar.gz 
 
 # 这一步是针对手动构建场景做优化。
 # 在 docker run --rm -it 的用法下，有可能文件还没落盘，容器就已经退出并被删除，从而导致压缩文件损坏。

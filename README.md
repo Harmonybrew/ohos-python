@@ -19,12 +19,12 @@
 
 示例：
 ```sh
-hdc file send python-3.14.2-ohos-arm64.tar.gz /data
+hdc file send python-3.14.3-ohos-arm64.tar.gz /data
 hdc shell
 
 cd /data
-tar -zxf python-3.14.2-ohos-arm64.tar.gz
-export PATH=$PATH:/data/python-3.14.2-ohos-arm64/bin
+tar -zxf python-3.14.3-ohos-arm64.tar.gz
+export PATH=$PATH:/data/python-3.14.3-ohos-arm64/bin
 
 # 现在可以使用 python3 命令了
 ```
@@ -39,9 +39,9 @@ docker run -itd --name=ohos ghcr.io/hqzing/docker-mini-openharmony:latest
 docker exec -it ohos sh
 
 cd /root
-curl -L -O https://github.com/Harmonybrew/ohos-python/releases/download/3.14.2/python-3.14.2-ohos-arm64.tar.gz
-tar -zxf python-3.14.2-ohos-arm64.tar.gz -C /opt
-export PATH=$PATH:/opt/python-3.14.2-ohos-arm64/bin
+curl -L -O https://github.com/Harmonybrew/ohos-python/releases/download/3.14.3/python-3.14.3-ohos-arm64.tar.gz
+tar -zxf python-3.14.3-ohos-arm64.tar.gz -C /opt
+export PATH=$PATH:/opt/python-3.14.3-ohos-arm64/bin
 
 # 现在可以使用 python3 命令了
 ```
@@ -94,5 +94,5 @@ python 这个软件本身的设计就没有刻意去实现 portable/relocatable�
 在基础的使用场景下，这个问题不会暴露出来，即使软件的实际使用位置和 prefix 不一致，我们也能正常使用 python3 和 pip3 等命令。但在深度的使用场景下就很容易遇到这方面的问题了。
 
 如果你遇到了这方面的问题，有两种处理方案：
-1. 将软件包放置到 prefix 目录下使用。本项目编包的时候设置的 prefix 是 /opt/python-3.14.2-ohos-arm64。
+1. 将软件包放置到 prefix 目录下使用。本项目编包的时候设置的 prefix 是 /opt/python-3.14.3-ohos-arm64。
 2. 自己重新编一个包，将 prefix 设置成你期望的安装路径。
