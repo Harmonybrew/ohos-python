@@ -40,10 +40,10 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         with:
-          path: python-3.14.4-ohos-arm64.tar.gz
+          path: python-3.14.5-ohos-arm64.tar.gz
 
       - name: Upload release asset
         if: github.event_name == 'release'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ github.ref_name }} python-3.14.4-ohos-arm64.tar.gz --clobber --repo ${{ github.repository }}
+        run: gh release upload ${{ github.ref_name }} python-3.14.5-ohos-arm64.tar.gz --clobber --repo ${{ github.repository }}
